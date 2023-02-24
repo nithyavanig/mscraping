@@ -46,7 +46,7 @@ prodlist = driver.find_element(By.CLASS_NAME,'plp-product-list__products')
 # print(prodlist)
 
 # whatsapp configs twilio
-account_sid = "" 
+account_sid = "ACc2b1c7a028282ae708306a6a212ff8d8" 
 auth_token = ""
 client = Client(account_sid, auth_token) 
 
@@ -61,24 +61,20 @@ for prodcard in prodcards:
     productInfo = {'title': title, 'price': amount,'description':desc}
     prodlist.append(productInfo)
     amountTrim = re.sub(",","",amount)
-    # print(amountTrim)
     if  int(amountTrim) <= expectedAmount:
         foundDiscount = True
-        # print(foundDiscount)
         expectedProdDetails.append(productInfo)
-        # print(productInfo)
 
 print(prodlist)
 
 if foundDiscount == True:
-    notificationMsg = "You have your favorite couch on discounted price! check it out {expectedProdDetails}"
+    notificationMsg = "You have your favorite couch on discounted price! {} check it out...".format(expectedProdDetails[0])
+    print(notificationMsg)
     try:
         message = client.messages.create(
-                                body='Hello there!',
+                                body=notificationMsg,
                                 from_='whatsapp:+14155238886',
                                 to='whatsapp:918825834718'
                             )
         print(message.sid)
     except twilio.TwilioRestException as err: print(err)
-
-# plp-fragment-wrapper
