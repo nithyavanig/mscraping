@@ -22,11 +22,13 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import twilio
+from twilio.rest import Client
+import re
 # import twilio.rest
 
 webpage = "https://www.ikea.com/in/en/" 
 searchterm = "KIVIK 4-seat sofa" 
-expectedAmount = 50000
+expectedAmount = 73000
 
 driver = webdriver.Chrome()
 driver.get(webpage)
@@ -44,9 +46,9 @@ prodlist = driver.find_element(By.CLASS_NAME,'plp-product-list__products')
 # print(prodlist)
 
 # whatsapp configs twilio
-account_sid = "ACc2b1c7a028282ae708306a6a212ff8d8" #replace this with yours
-auth_token = "8508504dd9195c97e32232926c785935" #replace this with yours
-client = twilio.rest.TwilioRestClient(account_sid, auth_token) 
+account_sid = "" 
+auth_token = ""
+client = Client(account_sid, auth_token) 
 
 prodlist = []
 foundDiscount = False
@@ -58,9 +60,13 @@ for prodcard in prodcards:
     amount = prodcard.find_element(By.CLASS_NAME, "pip-price__integer").text
     productInfo = {'title': title, 'price': amount,'description':desc}
     prodlist.append(productInfo)
-    if  int(amount) <= expectedAmount:
+    amountTrim = re.sub(",","",amount)
+    # print(amountTrim)
+    if  int(amountTrim) <= expectedAmount:
         foundDiscount = True
+        # print(foundDiscount)
         expectedProdDetails.append(productInfo)
+        # print(productInfo)
 
 print(prodlist)
 
